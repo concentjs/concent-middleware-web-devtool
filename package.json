@@ -1,0 +1,33 @@
+{
+  "name": "concent-middleware-web-devtool",
+  "version": "1.0.0",
+  "description": "concent的状态变迁调试工具",
+  "main": "src/index.js",
+  "module": "es/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/concentjs/concent-middleware-web-devtool.git"
+  },
+  "keywords": [
+    "concent",
+    "web-devtool",
+    "devtool",
+    "time",
+    "travel"
+  ],
+  "author": "fantasticsoul",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/concentjs/concent-middleware-web-devtool/issues"
+  },
+  "homepage": "https://github.com/concentjs/concent-middleware-web-devtool#readme",
+  "dependencies": {
+    "concent": "^1.4.9",
+    "immutable": "^4.0.0-rc.12",
+    "react": "^16.8.6",
+    "react-json-tree": "^0.11.2"
+  }
+}
