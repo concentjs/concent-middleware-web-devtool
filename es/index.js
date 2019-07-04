@@ -86,7 +86,7 @@ class ConcentWebDevTool extends React.Component {
     this.setState({ historyStateList: historyStateList });
   }
 
-  changeState(ctx){
+  changeState(ctx) {
     var calledBy = ctx.calledBy || ctx.ccKey;
     var type = ctx.type || '';
     var modifiedModule = ctx.module;
@@ -110,6 +110,9 @@ class ConcentWebDevTool extends React.Component {
   }
 
   renderHistory() {
+    var shouldExpandNode = (keyPath, data, level) => {
+      return false;
+    }
     var viewNodes = this.state.historyStateList.map((v) => {
       hid++;
       return (
@@ -118,7 +121,7 @@ class ConcentWebDevTool extends React.Component {
           <h4 style={stItem}>type: {v.type}</h4>
           <h4 style={stItem}>modifiedModule: {v.modifiedModule}</h4>
           <div style={{ marginTop: '-12px' }}>
-            <JSONTree data={v.state} theme={theme} invertTheme={false} shouldExpandNode={false} />
+            <JSONTree data={v.state} theme={theme} invertTheme={false} shouldExpandNode={shouldExpandNode} />
           </div>
         </div>
       );

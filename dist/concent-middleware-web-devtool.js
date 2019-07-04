@@ -152,6 +152,10 @@
     };
 
     _proto.renderHistory = function renderHistory() {
+      var shouldExpandNode = function shouldExpandNode(keyPath, data, level) {
+        return false;
+      };
+
       var viewNodes = this.state.historyStateList.map(function (v) {
         hid++;
         return React.createElement("div", {
@@ -174,7 +178,7 @@
           data: v.state,
           theme: theme,
           invertTheme: false,
-          shouldExpandNode: false
+          shouldExpandNode: shouldExpandNode
         })));
       });
       return viewNodes;
