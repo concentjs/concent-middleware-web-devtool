@@ -10,14 +10,14 @@ npm i concent-middleware-web-devtool
 在runConcent.js脚本里引入中间
 ```
 import { run } from 'concent';
-import { concentWebDevToolMiddleWare } from 'concent-middleware-web-devtool';
+import { concentWebDevToolMiddleware } from 'concent-middleware-web-devtool';
 
 
 run(
   // { ... your store definition },
   {
     //配置devtool中间件
-    middlewares:[concentWebDevToolMiddleWare],
+    middlewares:[concentWebDevToolMiddleware],
   }
 );
 ```
