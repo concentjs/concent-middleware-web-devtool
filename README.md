@@ -27,7 +27,7 @@ run(
 
 ```javascript
 import YourApp from './YourApp';
-import { ConcentWebDevTool } from './lib/concent-web-devtool';
+import { ConcentWebDevTool } from 'concent-middleware-web-devtool';
 
 function App(){
   return (
