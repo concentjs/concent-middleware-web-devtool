@@ -32,6 +32,7 @@ var stBox = {
   backgroundColor: '#00262f', overflowY: 'auto',
 }
 var stBtn = { position: 'fixed', top: 19, right: 19, zIndex: 9999 };
+var stCtrlBtn = { color: 'red', border: '1px solid red' };
 var stItem = { color: '#57c7de', margin: 0, padding: '2px' };
 var hid = 1;
 
@@ -137,8 +138,8 @@ class ConcentWebDevTool extends React.Component {
     if (show) {
       return (
         <div style={stBox}>
-          <button onClick={() => this.setState({ historyStateList: [] })}>清除</button>
-          <button onClick={() => this.setState({ show: false })}>关闭</button>
+          <button style={stCtrlBtn} onClick={() => this.setState({ historyStateList: [] })}>清除</button>
+          <button style={stCtrlBtn} onClick={() => this.setState({ show: false })}>关闭</button>
           {this.renderHistory()}
         </div>
       )
