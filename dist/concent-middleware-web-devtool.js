@@ -244,7 +244,7 @@
 
   toExport.ConcentWebDevTool = ConcentWebDevTool;
 
-  toExport.concentWebDevToolMiddleWare = function (stateInfo, next) {
+  toExport.concentWebDevToolMiddleware = function (stateInfo, next) {
     apiBridge.changeState(stateInfo);
     next();
   };
