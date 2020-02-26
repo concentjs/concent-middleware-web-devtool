@@ -25,6 +25,11 @@ var theme = {
   base0F: '#cc6633'
 };
 var ignoreEmptyMS = true;
+var labelKey_label_ = {
+  clear: '清除',
+  close: '关闭',
+  open: '开启状态调试工具',
+};
 
 var toExport = module.exports = {};
 var stBox = {
@@ -32,7 +37,8 @@ var stBox = {
   backgroundColor: '#00262f', overflowY: 'auto',
 }
 var stBtn = { position: 'fixed', top: 19, right: 19, zIndex: 9999 };
-var stCtrlBtn = { color: 'red', border: '1px solid red' };
+var stCtrlBtn = { color: 'red', border: '1px solid red', marginRight:'12px' };
+var stCtrlBtn2 = { color: 'red', border: '1px solid red' };
 var stItem = { color: '#57c7de', margin: 0, padding: '2px' };
 var hid = 1;
 
@@ -138,13 +144,13 @@ class ConcentWebDevTool extends React.Component {
     if (show) {
       return (
         <div style={stBox}>
-          <button style={stCtrlBtn} onClick={() => this.setState({ historyStateList: [] })}>清除</button>
-          <button style={stCtrlBtn} onClick={() => this.setState({ show: false })}>关闭</button>
+          <button style={stCtrlBtn} onClick={() => this.setState({ historyStateList: [] })}>{labelKey_label_.clear}</button>
+          <button style={stCtrlBtn2} onClick={() => this.setState({ show: false })}>{labelKey_label_.close}</button>
           {this.renderHistory()}
         </div>
       )
     } else {
-      return <button style={stBtn} onClick={() => this.setState({ show: true })}>开启状态调试工具</button>
+      return <button style={stBtn} onClick={() => this.setState({ show: true })}>{labelKey_label_.open}</button>
     }
 
   }
@@ -157,7 +163,12 @@ toExport.concentWebDevToolMiddleWare = function (stateInfo, next) {
   next();
 }
 
-toExport.setConf = function (ignoreEmptyModuleState) {
-  if (ignoreEmptyModuleState != undefined) ignoreEmptyMS = ignoreEmptyModuleState;
+toExport.setConf = function (wordConf, options) {
+  if (options && options.ignoreEmptyModuleState != undefined) ignoreEmptyMS = options.ignoreEmptyModuleState;
+  if (wordConf) {
+    if (wordConf.clear != undefined) labelKey_label_.clear = wordConf.clear;
+    if (wordConf.close != undefined) labelKey_label_.close = wordConf.close;
+    if (wordConf.open != undefined) labelKey_label_.clear = wordConf.open;
+  }
 }
 

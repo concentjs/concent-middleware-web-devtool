@@ -37,6 +37,12 @@
     base0E: '#ae81ff',
     base0F: '#cc6633'
   };
+  var ignoreEmptyMS = true;
+  var labelKey_label_ = {
+    clear: '清除',
+    close: '关闭',
+    open: '开启状态调试工具'
+  };
   var toExport = module.exports = {};
   var stBox = {
     position: 'fixed',
@@ -53,6 +59,15 @@
     top: 19,
     right: 19,
     zIndex: 9999
+  };
+  var stCtrlBtn = {
+    color: 'red',
+    border: '1px solid red',
+    marginRight: '12px'
+  };
+  var stCtrlBtn2 = {
+    color: 'red',
+    border: '1px solid red'
   };
   var stItem = {
     color: '#57c7de',
@@ -126,12 +141,19 @@
       });
     };
 
-    _proto.changeState = function changeState(ctx) {
-      var calledBy = ctx.calledBy || ctx.ccKey;
-      var type = ctx.type || '';
-      var modifiedModule = ctx.module;
+    _proto.changeState = function changeState(stateInfo) {
+      var calledBy = stateInfo.calledBy || stateInfo.ccKey;
+      var type = stateInfo.type || '';
+      var modifiedModule = stateInfo.module;
       var historyStateList = this.state.historyStateList;
       var lastItem = historyStateList[historyStateList.length - 1];
+      var sharedState = stateInfo.sharedState;
+
+      if (ignoreEmptyMS && !sharedState) {
+        return;
+      }
+
+      if (!sharedState) sharedState = {};
       var lastRootState;
 
       if (!lastItem) {
@@ -139,7 +161,7 @@
         lastRootState = makeRootState();
       } else lastRootState = lastItem.state;
 
-      var newRootState = updateModuleState(lastRootState, modifiedModule, ctx.state);
+      var newRootState = updateModuleState(lastRootState, modifiedModule, sharedState);
       historyStateList.push({
         calledBy: calledBy,
         modifiedModule: modifiedModule,
@@ -152,10 +174,6 @@
     };
 
     _proto.renderHistory = function renderHistory() {
-      var shouldExpandNode = function shouldExpandNode(keyPath, data, level) {
-        return false;
-      };
-
       var viewNodes = this.state.historyStateList.map(function (v) {
         hid++;
         return React.createElement("div", {
@@ -178,7 +196,7 @@
           data: v.state,
           theme: theme,
           invertTheme: false,
-          shouldExpandNode: shouldExpandNode
+          shouldExpandNode: false
         })));
       });
       return viewNodes;
@@ -193,18 +211,20 @@
         return React.createElement("div", {
           style: stBox
         }, React.createElement("button", {
+          style: stCtrlBtn,
           onClick: function onClick() {
             return _this2.setState({
               historyStateList: []
             });
           }
-        }, "\u6E05\u9664"), React.createElement("button", {
+        }, labelKey_label_.clear), React.createElement("button", {
+          style: stCtrlBtn2,
           onClick: function onClick() {
             return _this2.setState({
               show: false
             });
           }
-        }, "\u5173\u95ED"), this.renderHistory());
+        }, labelKey_label_.close), this.renderHistory());
       } else {
         return React.createElement("button", {
           style: stBtn,
@@ -213,7 +233,7 @@
               show: true
             });
           }
-        }, "\u5F00\u542F\u72B6\u6001\u8C03\u8BD5\u5DE5\u5177");
+        }, labelKey_label_.open);
       }
     };
 
@@ -222,9 +242,19 @@
 
   toExport.ConcentWebDevTool = ConcentWebDevTool;
 
-  toExport.concentWebDevToolMiddleware = function (ctx, next) {
-    apiBridge.changeState(ctx);
+  toExport.concentWebDevToolMiddleWare = function (stateInfo, next) {
+    apiBridge.changeState(stateInfo);
     next();
+  };
+
+  toExport.setConf = function (wordConf, options) {
+    if (options && options.ignoreEmptyModuleState != undefined) ignoreEmptyMS = options.ignoreEmptyModuleState;
+
+    if (wordConf) {
+      if (wordConf.clear != undefined) labelKey_label_.clear = wordConf.clear;
+      if (wordConf.close != undefined) labelKey_label_.close = wordConf.close;
+      if (wordConf.open != undefined) labelKey_label_.clear = wordConf.open;
+    }
   };
 
 })));

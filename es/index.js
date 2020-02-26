@@ -24,7 +24,12 @@ var theme = {
   base0E: '#ae81ff',
   base0F: '#cc6633'
 };
-
+var ignoreEmptyMS = true;
+var labelKey_label_ = {
+  clear: '清除',
+  close: '关闭',
+  open: '开启状态调试工具',
+};
 
 var toExport = module.exports = {};
 var stBox = {
@@ -32,6 +37,8 @@ var stBox = {
   backgroundColor: '#00262f', overflowY: 'auto',
 }
 var stBtn = { position: 'fixed', top: 19, right: 19, zIndex: 9999 };
+var stCtrlBtn = { color: 'red', border: '1px solid red', marginRight:'12px' };
+var stCtrlBtn2 = { color: 'red', border: '1px solid red' };
 var stItem = { color: '#57c7de', margin: 0, padding: '2px' };
 var hid = 1;
 
@@ -86,19 +93,26 @@ class ConcentWebDevTool extends React.Component {
     this.setState({ historyStateList: historyStateList });
   }
 
-  changeState(ctx) {
-    var calledBy = ctx.calledBy || ctx.ccKey;
-    var type = ctx.type || '';
-    var modifiedModule = ctx.module;
+  changeState(stateInfo){
+    var calledBy = stateInfo.calledBy || stateInfo.ccKey;
+    var type = stateInfo.type || '';
+    var modifiedModule = stateInfo.module;
     var historyStateList = this.state.historyStateList;
     var lastItem = historyStateList[historyStateList.length - 1];
+    var sharedState = stateInfo.sharedState;
+
+    if (ignoreEmptyMS && !sharedState) {
+      return;
+    }
+
+    if (!sharedState) sharedState = {};
 
     var lastRootState;
     if (!lastItem) {//已清除
       lastRootState = makeRootState();
     } else lastRootState = lastItem.state;
 
-    var newRootState = updateModuleState(lastRootState, modifiedModule, ctx.state)
+    var newRootState = updateModuleState(lastRootState, modifiedModule, sharedState);
 
     historyStateList.push({
       calledBy: calledBy,
@@ -110,9 +124,6 @@ class ConcentWebDevTool extends React.Component {
   }
 
   renderHistory() {
-    var shouldExpandNode = (keyPath, data, level) => {
-      return false;
-    }
     var viewNodes = this.state.historyStateList.map((v) => {
       hid++;
       return (
@@ -121,7 +132,7 @@ class ConcentWebDevTool extends React.Component {
           <h4 style={stItem}>type: {v.type}</h4>
           <h4 style={stItem}>modifiedModule: {v.modifiedModule}</h4>
           <div style={{ marginTop: '-12px' }}>
-            <JSONTree data={v.state} theme={theme} invertTheme={false} shouldExpandNode={shouldExpandNode} />
+            <JSONTree data={v.state} theme={theme} invertTheme={false} shouldExpandNode={false} />
           </div>
         </div>
       );
@@ -133,13 +144,13 @@ class ConcentWebDevTool extends React.Component {
     if (show) {
       return (
         <div style={stBox}>
-          <button onClick={() => this.setState({ historyStateList: [] })}>清除</button>
-          <button onClick={() => this.setState({ show: false })}>关闭</button>
+          <button style={stCtrlBtn} onClick={() => this.setState({ historyStateList: [] })}>{labelKey_label_.clear}</button>
+          <button style={stCtrlBtn2} onClick={() => this.setState({ show: false })}>{labelKey_label_.close}</button>
           {this.renderHistory()}
         </div>
       )
     } else {
-      return <button style={stBtn} onClick={() => this.setState({ show: true })}>开启状态调试工具</button>
+      return <button style={stBtn} onClick={() => this.setState({ show: true })}>{labelKey_label_.open}</button>
     }
 
   }
@@ -147,8 +158,17 @@ class ConcentWebDevTool extends React.Component {
 
 toExport.ConcentWebDevTool = ConcentWebDevTool;
 
-toExport.concentWebDevToolMiddleware = function (ctx, next) {
-  apiBridge.changeState(ctx);
+toExport.concentWebDevToolMiddleWare = function (stateInfo, next) {
+  apiBridge.changeState(stateInfo);
   next();
+}
+
+toExport.setConf = function (wordConf, options) {
+  if (options && options.ignoreEmptyModuleState != undefined) ignoreEmptyMS = options.ignoreEmptyModuleState;
+  if (wordConf) {
+    if (wordConf.clear != undefined) labelKey_label_.clear = wordConf.clear;
+    if (wordConf.close != undefined) labelKey_label_.close = wordConf.close;
+    if (wordConf.open != undefined) labelKey_label_.clear = wordConf.open;
+  }
 }
 
