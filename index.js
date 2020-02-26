@@ -24,7 +24,7 @@ var theme = {
   base0E: '#ae81ff',
   base0F: '#cc6633'
 };
-
+var ignoreEmptyMS = true;
 
 var toExport = module.exports = {};
 var stBox = {
@@ -86,19 +86,26 @@ class ConcentWebDevTool extends React.Component {
     this.setState({ historyStateList: historyStateList });
   }
 
-  changeState(ctx){
-    var calledBy = ctx.calledBy || ctx.ccKey;
-    var type = ctx.type || '';
-    var modifiedModule = ctx.module;
+  changeState(stateInfo){
+    var calledBy = stateInfo.calledBy || stateInfo.ccKey;
+    var type = stateInfo.type || '';
+    var modifiedModule = stateInfo.module;
     var historyStateList = this.state.historyStateList;
     var lastItem = historyStateList[historyStateList.length - 1];
+    var sharedState = stateInfo.sharedState;
+
+    if (ignoreEmptyMS && !sharedState) {
+      return;
+    }
+
+    if (!sharedState) sharedState = {};
 
     var lastRootState;
     if (!lastItem) {//已清除
       lastRootState = makeRootState();
     } else lastRootState = lastItem.state;
 
-    var newRootState = updateModuleState(lastRootState, modifiedModule, ctx.state)
+    var newRootState = updateModuleState(lastRootState, modifiedModule, sharedState);
 
     historyStateList.push({
       calledBy: calledBy,
@@ -144,8 +151,12 @@ class ConcentWebDevTool extends React.Component {
 
 toExport.ConcentWebDevTool = ConcentWebDevTool;
 
-toExport.concentWebDevToolMiddleWare = function (ctx, next) {
-  apiBridge.changeState(ctx);
+toExport.concentWebDevToolMiddleWare = function (stateInfo, next) {
+  apiBridge.changeState(stateInfo);
   next();
+}
+
+toExport.setConf = function (ignoreEmptyModuleState) {
+  if (ignoreEmptyModuleState != undefined) ignoreEmptyMS = ignoreEmptyModuleState;
 }
 
