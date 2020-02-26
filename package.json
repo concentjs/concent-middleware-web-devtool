@@ -1,6 +1,6 @@
 {
   "name": "concent-middleware-web-devtool",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "concent的状态变迁调试工具",
   "main": "lib/index.js",
   "scripts": {

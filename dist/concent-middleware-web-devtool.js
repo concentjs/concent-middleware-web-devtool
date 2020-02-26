@@ -58,17 +58,19 @@
     position: 'fixed',
     top: 19,
     right: 19,
+    fontWeight: 400,
     zIndex: 9999
   };
-  var stCtrlBtn = {
-    color: 'red',
-    border: '1px solid red',
-    marginRight: '12px'
-  };
   var stCtrlBtn2 = {
-    color: 'red',
-    border: '1px solid red'
+    color: 'blue',
+    fontWeight: 400,
+    border: '1px solid blue',
+    padding: '0 6px',
+    backgroundColor: 'silver'
   };
+  var stCtrlBtn = Object.assign({}, stCtrlBtn2, {
+    margin: '0 12px'
+  });
   var stItem = {
     color: '#57c7de',
     margin: 0,
@@ -253,7 +255,7 @@
     if (wordConf) {
       if (wordConf.clear != undefined) labelKey_label_.clear = wordConf.clear;
       if (wordConf.close != undefined) labelKey_label_.close = wordConf.close;
-      if (wordConf.open != undefined) labelKey_label_.clear = wordConf.open;
+      if (wordConf.open != undefined) labelKey_label_.open = wordConf.open;
     }
   };
 
