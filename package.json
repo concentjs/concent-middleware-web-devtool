@@ -1,6 +1,6 @@
 {
   "name": "concent-middleware-web-devtool",
-  "version": "1.0.8",
+  "version": "2.0.0",
   "description": "concent的状态变迁调试工具",
   "main": "lib/index.js",
   "scripts": {
@@ -24,7 +24,7 @@
   },
   "homepage": "https://github.com/concentjs/concent-middleware-web-devtool#readme",
   "dependencies": {
-    "concent": "^1.5.162",
+    "concent": "^2.0.0",
     "immutable": "^4.0.0-rc.12",
     "react": "^16.8.6",
     "react-json-tree": "^0.11.2"
